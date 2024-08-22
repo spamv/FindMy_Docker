@@ -99,13 +99,14 @@ def get_locations():
       if timestamp < startdate:
         continue # skip this report if it's outside of search range
       # adapted from https://github.com/hatomist/openhaystack-python, thanks @hatomist!
-      eph_key = ec.EllipticCurvePublicKey.from_encoded_point(ec.SECP224R1(), data[5:62])
+      adj = len(data) - 88
+      eph_key = ec.EllipticCurvePublicKey.from_encoded_point(ec.SECP224R1(), data[5+adj:62+adj])
       shared_key = ec.derive_private_key(priv, ec.SECP224R1(), default_backend()).exchange(ec.ECDH(), eph_key)
-      symmetric_key = sha256(shared_key + b'\x00\x00\x00\x01' + data[5:62])
+      symmetric_key = sha256(shared_key + b'\x00\x00\x00\x01' + data[5+adj:62+adj])
       decryption_key = symmetric_key[:16]
       iv = symmetric_key[16:]
-      enc_data = data[62:72]
-      tag = data[72:]
+      enc_data = data[62+adj:72+adj]
+      tag = data[72+adj:]
       # decrypt the data
       decrypted = decrypt(enc_data, algorithms.AES(decryption_key), modes.GCM(iv, tag))
       tag = decode_tag(decrypted)
