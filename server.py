@@ -117,6 +117,7 @@ def get_locations():
         'tag_id': table_tag_ids[report['id']],
         'lat': tag['lat'],
         'lon': tag['lon'],
+        'status': tag['status'], 
       })
     return jsonify({"results": response_arr})
 
