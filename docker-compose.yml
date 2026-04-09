@@ -4,6 +4,7 @@ services:
   findmy:
     build: .
     container_name: findmy_server
+    restart: unless-stopped
     stop_grace_period: 1s
     volumes:
       - ./data:/app/data:Z
@@ -12,10 +13,11 @@ services:
   anisette:
     image: dadoum/anisette-v3-server
     container_name: findmy_anisette
+    restart: unless-stopped
     network_mode: 'service:findmy'
     stop_grace_period: 1s
     volumes:
-      - anisette-v3_data:/home/Alcoholic/.config/anisette-v3/lib:Z
+      - anisette-v3_data:/home/Alcoholic/.config/anisette-v3:Z
 
 volumes:
   anisette-v3_data:
